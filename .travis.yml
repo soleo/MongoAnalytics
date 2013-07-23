@@ -1,0 +1,17 @@
+language: cpp
+compiler:
+  - gcc
+  - clang
+script: rake travis
+branches:
+  only:
+    - master
+notifications:
+  recipients:
+    - xinjiang.shao@exactsports.com
+  email:
+    on_success: change
+    on_failure: always
+rvm:
+  - 1.8.7
+  - 1.9.3
