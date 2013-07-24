@@ -80,7 +80,7 @@ namespace MonAna{
 						sm = &m_map[*it];
 						sm->count ++;
 					}else{
-						sm->count = 0;
+						sm->count = 1;
 						m_map[*it] = *sm; 
 					}
 				}
