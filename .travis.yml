@@ -2,7 +2,9 @@ language: cpp
 compiler:
   - gcc
 before_install:
-  - sudo apt-get install libboost-all-dev
+  - sudo apt-get install libboost-all-dev scons libpcre++
+before_script:
+  - ./buildscript/install_mongocxx.sh
 script: make
 branches:
   only:
