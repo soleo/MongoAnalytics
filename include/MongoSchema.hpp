@@ -32,7 +32,7 @@ namespace MonAna{
 			void process();
 			int skipField(std::string fieldname);
 			int isBson(std::string fieldname, mongo::BSONObj bo, SchemaModel* sm);
-			void extractMore(std::string fieldname, mongo::BSONOb bo);
+			void extractMore(std::string fieldname, mongo::BSONObj bo);
 	
 	}; // class
 	

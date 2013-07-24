@@ -140,7 +140,7 @@ namespace MonAna{
 		return 0;
 	}
 	
-	void MongoSchema::extractMore(std::string fieldname, mongo::BSONOb bo){
+	void MongoSchema::extractMore(std::string fieldname, mongo::BSONObj bo){
 		
 		// hashmap::const_iterator keyexsit = m_map.find(fieldname);
 		
