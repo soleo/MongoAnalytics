@@ -1,5 +1,5 @@
 CC = g++
-INCDIR = -I/usr/local/include -L/usr/local/lib -L../ -I../src -I./include
+INCDIR = -I/usr/local/include -L/usr/local/lib -L./lib -I./lib/include -I./include
 LDFLAGS = -lpthread -lmongoclient -lboost_thread -lboost_filesystem -lboost_program_options -lboost_system
 
 TARGET = monana

@@ -1,8 +1,9 @@
 language: cpp
 compiler:
   - gcc
-  - clang
-script: rake travis
+before_install:
+  - sudo apt-get install libboost-all-dev
+script: make
 branches:
   only:
     - master
@@ -12,6 +13,3 @@ notifications:
   email:
     on_success: change
     on_failure: always
-rvm:
-  - 1.8.7
-  - 1.9.3
