@@ -29,10 +29,10 @@ int parse_options(int argc, char** argv,
 	    po::options_description desc("Options"); 
 	    desc.add_options() 
 	      ("help,h", "Print help messages")
-		  ("action,a", po::value<std::string>(&action)->required(), "schema")
+		  ("action,a", po::value<std::string>(&action)->required(), "schema (Required)")
 		  ("verbose,v", "Display Verbose Information") 
-	      ("dbname,d", po::value<std::string>(&db)->required(), "Database Name") 
-	      ("colname,c", po::value<std::string>(&col), "Collection Name")
+	      ("dbname,d", po::value<std::string>(&db)->required(), "Database Name (Required)") 
+	      ("colname,c", po::value<std::string>(&col)->required(), "Collection Name (Required)")
 		  ("export,e", po::value<std::string>(&expformat), "Export Format. Eg:csv,JSON,XML"); 
  
 	    po::variables_map vm; 
@@ -89,12 +89,12 @@ int main(int argc, char** argv) {
 	  exit(0);
   }
   
-  std::cout << "Connecting to " << db << " use action " << action << endl;
+  //std::cout << "Connecting to " << db << " use action " << action << endl;
   
   mongo::DBClientConnection c;
   try {
     c.connect("localhost");
-    std::cout << "connected ok" << std::endl;
+    //std::cout << "connected ok" << std::endl;
   } catch( const mongo::DBException &e ) {
     std::cout << "caught " << e.what() << std::endl;
   }
