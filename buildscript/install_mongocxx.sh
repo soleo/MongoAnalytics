@@ -7,5 +7,5 @@ cd mongo-cxx-driver-v2.4
 sudo rm .sconsign.dblite
 scons
 sudo scons install
-sudo chmod 755 -R /usr/local/include/mongo/*
-sudo chmod 755 -R /usr/local/lib/libmongo*
+# sudo chmod 755 -R /usr/local/include/mongo/*
+# sudo chmod 755 -R /usr/local/lib/libmongo*
