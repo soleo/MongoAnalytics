@@ -31,8 +31,11 @@ namespace MonAna{
 			hashmap m_map;
 			void process();
 			int skipField(std::string fieldname);
-			int isBson(std::string fieldname, mongo::BSONObj bo, SchemaModel* sm);
-			void extractMore(std::string fieldname, mongo::BSONObj bo);
+			
+			std::string getType(mongo::BSONElement belem);
+			//int extractMore(mongo::BSONElement belem, std::string parent, int& depth);
+			int extractBSON(mongo::BSONObj bo, int& depth, std::string parent);
+			void printStringSet(std::set<std::string> set);
 	
 	}; // class
 	

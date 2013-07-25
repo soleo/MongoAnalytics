@@ -107,11 +107,5 @@ int main(int argc, char** argv) {
 	 std::cout << result << endl;
   }
   
-/*
-  auto_ptr<mongo::DBClientCursor> cursor = c.query("dev.camps_events",mongo::BSONObj());
-  while(cursor->more()){
-        std::cout << cursor->next().toString() << endl;
-  }
-  */
   return EXIT_SUCCESS;
 }

@@ -54,39 +54,35 @@ namespace MonAna{
 		//std::cout << "count:" <<  recordscount << std::endl;
 		
 		std::auto_ptr<mongo::DBClientCursor> cursor = m_conn->query(querystr, mongo::Query());
-		std::set<std::string> fields;
+		//std::set<std::string> fields;
 		while(cursor->more()){
 			mongo::BSONObj bo = cursor->next();
-			fields.clear();
-			int count = bo.getFieldNames(fields);
-			//std::cout << "fields count:" << count << std::endl;
-			std::set<std::string>::iterator it;
-			for(it = fields.begin(); it != fields.end(); it++)
-			{
-				
-				// skip field if it is in skipvector
-				if(skipField(*it)){
+			
+			for( BSONObj::iterator i = bo.begin(); i.more(); ) { 
+				BSONElement e = i.next();
+				if(skipField(e.fieldName())){
 					continue;
 				}
 				
-				hashmap::const_iterator keyexsit = m_map.find(*it);
-				SchemaModel* sm = new SchemaModel();
-				if(isBson(*it, bo, sm)){
-					// go into the object and check until reach 5th layer
-					extractMore(*it, bo);
-				}else{
-				
+				if(e.isSimpleType()){
+					hashmap::const_iterator keyexsit = m_map.find(e.fieldName());
+					SchemaModel* sm = new SchemaModel();
 					if(keyexsit != m_map.end()){
-						sm = &m_map[*it];
-						sm->count ++;
+							sm = &m_map[e.fieldName()];
+							sm->count ++;
+							
 					}else{
-						sm->count = 1;
-						m_map[*it] = *sm; 
+							sm->count = 1;
+							sm->datatype = getType(e);
+							m_map[e.fieldName()] = *sm; 
 					}
+				}else if(e.isABSONObj()){
+					int depth = 0;
+					std::string parent = e.fieldName();
+					extractBSON(e.Obj(), depth, parent);
 				}
-			    
-			}
-			
+				
+			}			
 		}
 		BSONObjBuilder bOb;
 		BSONArrayBuilder bArr;
@@ -116,34 +112,71 @@ namespace MonAna{
 		return 0;
 	}
 	
-	int MongoSchema::isBson(std::string fieldname, mongo::BSONObj bo, SchemaModel* sm){
-		mongo::BSONElement belem = bo.getField(fieldname);
-		if(belem.isABSONObj()) {
-			sm->datatype = "BSON";
-			return 1;
+	std::string MongoSchema::getType(mongo::BSONElement belem){
+		
+		if(belem.isABSONObj()) {	
+			return "BSON";
 		}else if(belem.isSimpleType()){
 			// Simple Type: Number, String, Date, Bool or OID
-			if(belem.isNumber() || 
-			   belem.type() == mongo::NumberInt || 
-			   belem.type() == mongo::NumberLong ||
-			   belem.type() == mongo::NumberDouble ){
-				sm->datatype = "Number";
+			if(belem.isNumber()){
+				return "Number";
 			}else if(belem.type() == mongo::String){
-				sm->datatype = "String";
+				return "String";
+			}else if(belem.type() == mongo::Date){
+				return "Date";
+			}else if(belem.type() == mongo::Bool){
+				return "Boolean";
 			}else{
-				sm->datatype = "Other";
+				return "Other";
 			}
 			
 		}else{
-			sm->datatype = "Unknown";
+			return "Unknown";
 		}		
-		return 0;
 	}
 	
-	void MongoSchema::extractMore(std::string fieldname, mongo::BSONObj bo){
+	int MongoSchema::extractBSON(mongo::BSONObj bo, int& depth, std::string parent){
+
+		if(depth >= 4){
+			return 0;
+		}
+		depth++;
 		
-		// hashmap::const_iterator keyexsit = m_map.find(fieldname);
+		for( BSONObj::iterator i = bo.begin(); i.more(); ) { 
+			BSONElement e = i.next();
+			std::string fieldname = parent ;
+			fieldname.append(".");
+			fieldname.append(e.fieldName());
+			if(e.isSimpleType()){
+					hashmap::const_iterator keyexsit = m_map.find(fieldname);
+					SchemaModel* sm = new SchemaModel();
+					if(keyexsit != m_map.end()){
+							sm = &m_map[fieldname];
+							sm->count ++;
+							
+					}else{
+							sm->count = 1;
+							sm->datatype = getType(e);
+							m_map[fieldname] = *sm; 
+					}
+			 }else if(e.isABSONObj()){
+					
+					extractBSON(e.Obj(), depth, fieldname);
+			}
+				
+		}
 		
+		return 0;		
+	}
+	
+	void MongoSchema::printStringSet(std::set<std::string> set){
+		std::set<std::string>::iterator it;
+		for(it = set.begin(); it != set.end(); it++)
+		{
+			std::cout << *it << "\t";
+		}
+		std::cout << "\r\n";
+
 	}
 	
 }
