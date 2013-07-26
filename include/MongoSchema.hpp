@@ -25,7 +25,8 @@ namespace MonAna{
 			std::string                m_dbname;
 			std::string                m_col;
 			std::vector<std::string>   m_skipvector;
-		
+			int                        m_depth;
+			
 			mongo::DBClientConnection* m_conn;
 			mongo::BSONObj             m_schema;
 			hashmap m_map;

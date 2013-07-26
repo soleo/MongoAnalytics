@@ -12,7 +12,7 @@ namespace MonAna{
 	MongoSchema::MongoSchema(){
 		m_dbname.clear();
 		m_col.clear(); 
-		
+		m_depth = 4;
 		// init a list of fields I want to skip checking
 		m_skipvector.push_back("_id");
 		m_skipvector.push_back("id");
@@ -137,13 +137,18 @@ namespace MonAna{
 	
 	int MongoSchema::extractBSON(mongo::BSONObj bo, int& depth, std::string parent){
 
-		if(depth >= 4){
+		if(depth >= m_depth){
 			return 0;
 		}
 		depth++;
 		
 		for( BSONObj::iterator i = bo.begin(); i.more(); ) { 
 			BSONElement e = i.next();
+			
+			if(skipField(e.fieldName())){
+					continue;
+				}
+
 			std::string fieldname = parent ;
 			fieldname.append(".");
 			fieldname.append(e.fieldName());
